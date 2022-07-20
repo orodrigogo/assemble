@@ -2,25 +2,12 @@
   "testRunner": "jest",
   "runnerConfig": "e2e/config.json",
   "skipLegacyWorkersInjection": true,
-  "apps": {
-    "ios": {
-      "type": "ios.app",
-      "binaryPath": "ios/build/Products/Debug-iphonesimulator/assemble.app",
-      "build": "xcodebuild -workspace ios/assemble.xcworkspace -configuration release -scheme assemble -sdk iphonesimulator -derivedDataPath ios/build"
-    }
-  },
-  "devices": {
-    "simulator": {
-      "type": "ios.simulator",
-      "device": {
-        "type": "iPhone 13"
-      }
-    }
-  },
   "configurations": {
     "ios": {
-      "device": "simulator",
-      "app": "ios"
+      "name": "iPhone 13",
+      "type": "ios.simulator",
+      "binaryPath": "ios/build/Products/Debug-iphonesimulator/assemble.app",
+      "build": "xcodebuild -workspace ios/assemble.xcworkspace -configuration release -scheme assemble -sdk iphonesimulator -derivedDataPath ios/build"
     }
   },
   "artifacts": {
