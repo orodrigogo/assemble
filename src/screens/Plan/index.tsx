@@ -52,6 +52,7 @@ export function Plan() {
             title="Basic"
             active={plan.name === 'Basic'}
             onPress={() => handleChangePlan('basic')}
+            testID="option-basic"
           />
         </View>
 
@@ -64,13 +65,12 @@ export function Plan() {
         {
           emailSent &&
           <Text style={styles.confirmation} testID="confirmation-message">
-            We send you a  {'\n'}
-            confirmation email.
+            Nós enviamos um e-mail de confirmação para você.
           </Text>
         }
 
         <Button
-          title="Continuar"
+          title="Confirmar"
           onPress={handleSubscribe}
           testID="button-subscribe"
         />

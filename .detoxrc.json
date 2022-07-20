@@ -5,7 +5,8 @@
   "apps": {
     "ios": {
       "type": "ios.app",
-      "binaryPath": "ios/build/Products/Debug-iphonesimulator/assemble.app"
+      "binaryPath": "ios/build/Products/Debug-iphonesimulator/assemble.app",
+      "build": "xcodebuild -workspace ios/assemble.xcworkspace -configuration release -scheme assemble -sdk iphonesimulator -derivedDataPath ios/build"
     }
   },
   "devices": {
