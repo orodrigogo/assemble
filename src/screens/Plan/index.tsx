@@ -12,6 +12,7 @@ import { styles } from './styles';
 export function Plan() {
   const [plan, setPlan] = useState<PlanInfoProps>({ name: 'Basic', value: '5.25' });
   const [emailSent, setEmailSent] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   function handleChangePlan(plan: string) {
     if (plan === 'basic') {
@@ -27,8 +28,15 @@ export function Plan() {
     }
   }
 
-  function handleSubscribe() {
-    setEmailSent(true);
+  async function handleSubscribe() {
+    setIsLoading(true);
+
+    await new Promise((resolve) => setTimeout(() => {
+      setIsLoading(false);
+      setEmailSent(true);
+
+      return resolve;
+    }, 3000));
   }
 
   return (
@@ -63,17 +71,21 @@ export function Plan() {
         />
 
         {
-          emailSent &&
+          emailSent && !isLoading &&
           <Text style={styles.confirmation} testID="confirmation-message">
             Nós enviamos um e-mail de confirmação para você.
           </Text>
         }
 
-        <Button
-          title="Confirmar"
-          onPress={handleSubscribe}
-          testID="button-subscribe"
-        />
+        {
+          !emailSent &&
+          < Button
+            title="Confirmar"
+            onPress={handleSubscribe}
+            testID="button-subscribe"
+            isLoading={isLoading}
+          />
+        }
 
         <Text style={styles.details} testID="plan-note">
           Se o preço mudar, iremos notificá-lo com antecedência.

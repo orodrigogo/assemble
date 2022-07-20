@@ -32,7 +32,6 @@ describe('Plan Screen', () => {
     // To be able to visualize the final result of the interaction.
     await new Promise((resolve) => setTimeout(resolve, 5000));
 
-
     await device.takeScreenshot('snapshot-premium-plan-test');
 
     // Verify if message is on screen.
