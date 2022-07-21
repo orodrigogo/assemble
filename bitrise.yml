@@ -1,46 +1,64 @@
 ---
-format_version: '11'
+format_version: 1.1.0
 default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
-project_type: react-native
+trigger_map:
+- push_branch: "*"
+  workflow: tests
 workflows:
-  deploy:
-    description: |
-      Runs a build on Expo Application Services (EAS).
-
-      Next steps:
-      - Configure the `Run Expo Application Services (EAS) build` Step's `Access Token` input.
-      - Check out [Getting started with Expo apps](https://devcenter.bitrise.io/en/getting-started/getting-started-with-expo-apps.html).
-      - For an alternative deploy workflow checkout the [(React Native) Expo: Build using Turtle CLI recipe](https://github.com/bitrise-io/workflow-recipes/blob/main/recipes/rn-expo-turtle-build.md).
+  _tests_setup:
     steps:
-    - activate-ssh-key@4: {}
-    - git-clone@6: {}
-    - npm@1:
+    - activate-ssh-key: {}
+    - git-clone:
         inputs:
-        - command: install
-    - run-eas-build@0:
+        - clone_depth: ''
+        title: Git Clone Repo
+    - script:
         inputs:
-        - platform: "$PLATFORM"
-    - deploy-to-bitrise-io@2: {}
-  primary:
-    description: |
-      Installs dependencies.
+        - content: |-
+            #!/bin/bash
 
-      Next steps:
-      - Add tests to your project and configure the workflow to run them.
-      - Check out [Getting started with Expo apps](https://devcenter.bitrise.io/en/getting-started/getting-started-with-expo-apps.html).
+            npm cache verify
+
+            npm install
+        title: Install NPM Packages
+    before_run:
+    after_run:
+  _detox_tests:
+    before_run: []
+    after_run: []
     steps:
-    - activate-ssh-key@4: {}
-    - git-clone@6: {}
-    - npm@1:
+    - npm:
         inputs:
-        - command: install
-    - deploy-to-bitrise-io@2: {}
-meta:
-  bitrise.io:
-    stack: osx-xcode-13.2.x
-    machine_type_id: g2.4core
-app:
-  envs:
-  - opts:
-      is_expand: false
-    PLATFORM: ios
+        - command: install -g detox-cli
+        title: Install Detox CLI
+    - npm:
+        inputs:
+        - command: install -g react-native-cli
+        title: Install React Native CLI
+    - script:
+        inputs:
+        - content: |-
+            #!/bin/bash
+
+            brew tap wix/brew
+            brew install applesimutils
+        title: Install Detox Utils
+    - script:
+        inputs:
+        - content: |-
+            #!/bin/bash
+
+            detox build --configuration ios
+        title: Detox - Build Release App
+    - script:
+        inputs:
+        - content: |-
+            #!/bin/bash
+
+            detox test --configuration ios --cleanup
+        title: Detox - Run E2E Tests
+  tests:
+    before_run:
+    - _tests_setup
+    - _detox_tests
+    after_run: []
